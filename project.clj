@@ -12,11 +12,11 @@
   :npm {:dependencies [[source-map-support "0.4.0"]]}
   :source-paths ["src"]
   :cljs-lambda
-  {:defaults      {:role "FIXME"}
+  {:defaults      {:role "arn:aws:iam::559676143065:role/cljs-lambda-default"}
    :resource-dirs ["static"]
    :functions
-   [{:name   "work-magic"
-     :invoke habitpaper.core/work-magic}]}
+   [{:name   "habitpaper_log"
+     :invoke habitpaper.core/log}]}
   :cljsbuild
   {:builds [{:id "habitpaper"
              :source-paths ["src"]
@@ -33,4 +33,8 @@
                         :target        :nodejs
                         :language-in   :ecmascript5
                         :optimizations :none
-                        :main          habitpaper.test-runner}}]})
+                        :main          habitpaper.test-runner}}]}
+
+  :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
+                                  [org.clojure/tools.nrepl "0.2.10"]]
+                   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}})
