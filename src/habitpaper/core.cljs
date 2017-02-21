@@ -2,9 +2,12 @@
   (:require [cljs-lambda.macros :refer-macros [deflambda defgateway]]
             [cljs.pprint :as pprint]))
 
-(defgateway log [{:keys [body] :as req} ctx]
-  (let [data (js/JSON.parse body)]
-    (js/console.log (with-out-str (pprint/pprint data)))
-    {:status  200
+(defgateway log [{:keys [body query] :as req} ctx]
+  (js/console.log (with-out-str (pprint/pprint (js/JSON.parse body))))
+  (if-let [dropbox-challenge (:challenge query)]
+    {:status 200
      :headers {:content-type "text/plain"}
-     :body    (with-out-str (pprint/pprint req))}))
+     :body dropbox-challenge}
+    {:status 200
+     :headers {:content-type "text/plain"}
+     :body (with-out-str (pprint/pprint req))}))
