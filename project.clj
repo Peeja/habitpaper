@@ -15,8 +15,8 @@
   {:defaults      {:role "arn:aws:iam::559676143065:role/cljs-lambda-default"}
    :resource-dirs ["static"]
    :functions
-   [{:name   "habitpaper_log"
-     :invoke habitpaper.core/log}]}
+   [{:name   "habitpaper_update"
+     :invoke habitpaper.core/update}]}
   :cljsbuild
   {:builds [{:id "habitpaper"
              :source-paths ["src"]
