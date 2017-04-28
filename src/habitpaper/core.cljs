@@ -1,12 +1,11 @@
 (ns habitpaper.core
   (:refer-clojure :exclude [get update])
   (:require [cljs-lambda.macros :refer-macros [defgateway]]
-            [cljs.core.async :refer [<! put! close! chan]]
-            [cljs.nodejs :as node]
-            [cljs.pprint :as pprint])
+            [cljs.core.async :refer [<! chan close! put!]]
+            [cljs.nodejs :as nodejs])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
 
-(def https (node/require "https"))
+(def https (nodejs/require "https"))
 
 (defn get [host path headers]
   (let [c (chan)
@@ -23,7 +22,9 @@
         (put! c resp)))
     c))
 
-(defgateway update [{{:keys [habitica-user-id habitica-api-token] :as stage-variables} :stage-variables} ctx]
+(def Dropbox (nodejs/require "dropbox"))
+
+(defgateway update [{{:keys [habitica-user-id habitica-api-token dropbox-access-token] :as stage-variables} :stage-variables} ctx]
   (let [c (chan)
         get-c (get "habitica.com" "/api/v3/tasks/user?type=todos"
                    {:x-api-user habitica-user-id
@@ -31,5 +32,10 @@
     (go
       (let [resp (<! get-c)]
         (js/console.log resp))
+      (-> (Dropbox. #js {:accessToken dropbox-access-token})
+          (.filesDownload #js {:path "/TaskPaper.taskpaper"})
+          (.then #(do
+                    (js/console.log (.-fileBinary %))
+                    (done))))
       (put! c {:status 200}))
     c))
