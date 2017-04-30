@@ -24,8 +24,11 @@
 
 (def Dropbox (nodejs/require "dropbox"))
 
-(defgateway update [{{:keys [habitica-user-id habitica-api-token dropbox-access-token] :as stage-variables} :stage-variables} ctx]
-  (let [c (chan)
+(defgateway update [_ _]
+  (let [habitica-user-id process.env.HABITICA_USER_ID
+        habitica-api-token process.env.HABITICA_API_TOKEN
+        dropbox-access-token process.env.DROPBOX_ACCESS_TOKEN
+        c (chan)
         get-c (get "habitica.com" "/api/v3/tasks/user?type=todos"
                    {:x-api-user habitica-user-id
                     :x-api-key habitica-api-token})]

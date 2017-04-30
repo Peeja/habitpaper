@@ -6,3 +6,5 @@ pom.xml
 /target/
 .lein*
 /node_modules
+secrets.yml
+/.serverless

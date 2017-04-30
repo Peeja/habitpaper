@@ -1,0 +1,28 @@
+service: habitpaper
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  environment:
+    HABITICA_USER_ID: "${self:custom.secrets.HABITICA_USER_ID}"
+    HABITICA_API_TOKEN: "${self:custom.secrets.HABITICA_API_TOKEN}"
+    DROPBOX_ACCESS_TOKEN: "${self:custom.secrets.DROPBOX_ACCESS_TOKEN}"
+
+functions:
+  update:
+    cljs: habitpaper.core/update
+    events:
+      - http:
+          path: update
+          method: post
+
+plugins:
+  - serverless-cljs-plugin
+
+package:
+  exclude:
+    - secrets.yml
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
