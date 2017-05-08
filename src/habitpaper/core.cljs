@@ -42,3 +42,7 @@
                     (done))))
       (put! c {:status 200}))
     c))
+
+(defgateway dropbox-verify [{:keys [query]} _]
+  {:status 200
+   :body (:challenge query)})

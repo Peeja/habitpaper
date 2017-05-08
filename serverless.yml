@@ -15,6 +15,12 @@ functions:
       - http:
           path: update
           method: post
+  dropbox-verify:
+    cljs: habitpaper.core/dropbox-verify
+    events:
+      - http:
+          path: update
+          method: get
 
 plugins:
   - serverless-cljs-plugin
